@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    SELL
+{% endblock %}
+
+{% block main %}
+<h1>Sell Quotes</h1>
+<br>
+<form action="/sell" method="post">
+    <div class="mb-3">
+        <select name="symbol" id="sell_symbol">
+                <option value="None" disabled selected="selected">Select Symbol</option>
+            {% for record in webSymbols %}
+                {% for key in record %}
+                <option value="{{ record[key] }}">{{ record[key] }}</option>
+                {% endfor %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <input type="number" name="shares" id="sell_shares" autocomplete="off" class="form-control mx-auto w-auto" placeholder="Amount to sell">
+    </div>
+    <button class="btn btn-primary" type="submit">Sell</button>
+</form>
+{% endblock %}

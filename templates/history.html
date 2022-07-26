@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+<table class="table">
+    <h1>Transaction History</h1>
+    <br>
+    <thead class="table-dark">
+        <tr>
+            <td>STOCK</td>
+            <td>TRANSACTION AMOUNT</td>
+            <td>SHARE VALUE (at buy time)</td>
+            <td>DATE</td>
+            <td>TRANSACTION TYPE</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in webHistory %}
+        <tr>
+            {% for key in record %}
+            <td>{{ record[key] }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

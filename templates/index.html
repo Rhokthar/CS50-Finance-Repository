@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+<!-- Shows user portfolio via table -->
+<h1>Hello, {{ webUsername }}! That's your Portfolio</h1>
+<br>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <td>STOCK NAME</td>
+            <td>SHARES AMOUNT</td>
+            <td>SHARE CURRENT PRICE</td>
+            <td>TOTAL VALUE</td>
+            <td>TRANSACTION</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in webRecap %}
+        <tr>
+            {% for key in record %}
+            <!-- Formatting only values -->
+            {% if key == "share_value" %}
+                <td>{{ record[key] | usd }}</td>
+            {% elif key == "tot_value" %}
+                <td>{{ record[key] | usd }}</td>
+            {% else %}
+                <td>{{ record[key] }}</td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                <form action="/buy" method="post">
+                    <!-- Pass symbol value -->
+                    <input id="index_symbol" name="symbol" type="hidden" value="{{ record['symbol'] }}">
+                    <!-- <input id="starting_shares" name="starting_shares" type="hidden" value="{{ record['shares_amount'] }}"> -->
+                    <input type="number" id="index_shares" name="shares" placeholder="Num" style="width:4rem;">
+                    <button class="btn btn-primary" type="submit">Buy More</button>
+                    <button class="btn btn-primary" type="submit" formaction="/sell">Sell</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <td>YOUR FINANCIES</td>
+            <td>TOTAL FINANCIES</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ userCash | usd }}</td>
+            <td>{{ userTotalCash | usd }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

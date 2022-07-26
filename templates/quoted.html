@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+    <h1>Search result:</h1>
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <td>NAME</td>
+                <td>PRICE</td>
+                <td>SYMBOL</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for key in searchedSymbol %}
+                {% if searchedSymbol[key]|float != 0 %}
+                    <td>{{ searchedSymbol[key] | usd }}</td>
+                {% else %}
+                    <td>{{ searchedSymbol[key] }}</td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
