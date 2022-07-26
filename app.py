@@ -27,8 +27,9 @@ Session(app)
 db = SQL("sqlite:///finance.db")
 
 # Make sure API key is set
-if not os.environ.get("API_KEY"):
-    raise RuntimeError("API_KEY not set")
+    # api_key = "pk_4f865f73776848bcb41e369b94515e67"
+    # if not os.environ.get(api_key):
+    #     raise RuntimeError("API_KEY not set")
 
 
 @app.after_request
@@ -241,15 +242,15 @@ def editPassword():
         if check_password_hash(oldPSW[0]["hash"], request.form.get("new_psw")):
             return apology("NEW PASSWORD must be different from OLD PASSWORD")
         # New password requisites not satisfied:
-        match PasswordRequisites(request.form.get("new_psw")):
-            case "ERR1":
-                return apology("PASSWORD LENGHT must be at least 12 CHARACTERS LONG")
-            case "ERR2":
-                return apology("PASSWORD must contain AT LEAST 1 UPPER AND LOWER CASE LETTER")
-            case "ERR3":
-                return apology("PASSWORD must contain AT LEAST 1 NUMBER")
-            case "ERR4":
-                return apology("PASSWORD must cointain AT LEAST 1 SPECIAL CHARACTER")
+        errCode = PasswordRequisites(request.form.get("new_psw"))
+        if errCode == "ERR1":
+            return apology("PASSWORD LENGHT must be at least 12 CHARACTERS LONG")
+        elif errCode == "ERR2":
+            return apology("PASSWORD must contain AT LEAST 1 UPPER AND LOWER CASE LETTER")
+        elif errCode == "ERR3":
+            return apology("PASSWORD must contain AT LEAST 1 NUMBER")
+        elif errCode == "ERR4":
+            return apology("PASSWORD must cointain AT LEAST 1 SPECIAL CHARACTER")
 
         # Confirm password field blank
         if not request.form.get("new_confirm"):
@@ -390,19 +391,15 @@ def register():
             return apology("PASSWORD FIELD can't be left BLANK")
 
         # Check password requisites
-        # Don't know why check50 doesn't work with those commented lines.
-        # Registration do work even with this control, but check50 doesn't.
-        # Maybe it uses some presetted passwords that collide with those requirements
-        # So, just for the submitting part, I'll leave this part commented
-        """match PasswordRequisites(request.form.get("password")):
-            case "ERR1":
-                return apology("PASSWORD LENGHT must be at least 12 CHARACTERS LONG")
-            case "ERR2":
-                return apology("PASSWORD must contain AT LEAST 1 UPPER AND LOWER CASE LETTER")
-            case "ERR3":
-                return apology("PASSWORD must contain AT LEAST 1 NUMBER")
-            case "ERR4":
-                return apology("PASSWORD must cointain AT LEAST 1 SPECIAL CHARACTER")"""
+        errCode = PasswordRequisites(request.form.get("password"))
+        if errCode == "ERR1":
+            return apology("PASSWORD LENGHT must be at least 12 CHARACTERS LONG")
+        elif errCode == "ERR2":
+            return apology("PASSWORD must contain AT LEAST 1 UPPER AND LOWER CASE LETTER")
+        elif errCode == "ERR3":
+            return apology("PASSWORD must contain AT LEAST 1 NUMBER")
+        elif errCode == "ERR4":
+            return apology("PASSWORD must cointain AT LEAST 1 SPECIAL CHARACTER")
 
         # Password and Confirmation not equals
         if request.form.get("password") != request.form.get("confirmation"):
@@ -527,3 +524,6 @@ def PasswordRequisites(inputPSW):
     # Special Character
     elif not ContainsSpecial(inputPSW):
         return "ERR4"
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
